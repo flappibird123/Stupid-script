@@ -32,7 +32,7 @@ cargo build --release
 3. **Run the interpreter:**
 
 ```bash
-cargo run -- path/to/your/code.ss
+cargo run -- path/to/your/code.sst
 ```
 
 > Replace `code.ss` with your Stupid Script source file.
@@ -55,7 +55,7 @@ if (x < y) {
 Run the program with:
 
 ```bash
-cargo run -- examples/test.ss
+cargo run -- examples/test.sst
 ```
 
 ---

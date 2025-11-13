@@ -8,7 +8,7 @@ struct Token {
 }
 
 enum TokenKind {
-    KeyWord(String),
+    KeyWord(KeyWord),
     Identifier(String),
     Type(Type),
     Operator(Operator),
@@ -45,11 +45,21 @@ enum Symbol {
     SemiColon,
 }
 
-fn tokenize(source_code: &str) -> Vec<Token> { 
+fn tokenize(source_code: &str) -> Vec<Token> {
     let tokens: Vec<Token> = [];
     let mut current_line = 1;
     let mut column = 1;
-    
+    if source_code.chars().count() == 0 {
+        return tokens;
+    }
+    let mut next_word = first_space_index(source_code);
+}
+
+fn identify_keyword(string: &str) -> Option<KeyWord> {
+    match string {
+        "let" => Some(KeyWord::Let),
+        "const" => Some(KeyWord::Const)
+    }
 }
 
 
