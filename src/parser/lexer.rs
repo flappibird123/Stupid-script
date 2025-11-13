@@ -1,3 +1,5 @@
+use crate::parser::utils;
+
 struct Token {
     kind: TokenKind,
     value: Option<String>,
@@ -41,6 +43,13 @@ enum Symbol {
     LDblQuote,
     RDblQuote,
     SemiColon,
+}
+
+fn tokenize(source_code: &str) -> Vec<Token> { 
+    let tokens: Vec<Token> = [];
+    let mut current_line = 1;
+    let mut column = 1;
+    
 }
 
 
