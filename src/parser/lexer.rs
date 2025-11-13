@@ -1,4 +1,4 @@
-mod lexer {
+pub mod lexer {
     #[derive(Debug)]
     pub struct Token {
         pub kind: TokenKind,
@@ -25,18 +25,19 @@ mod lexer {
 
     #[derive(Debug)]
     pub enum Operator {
-        Assignment, // '='
-        Plus,       // '+'
-        Minus,      // '-'
-        Multiply,   // '*'
-        Division,   // '/'
+        Assignment, // =
+        Plus,       // +
+        Minus,      // -
+        Multiply,   // *
+        Division,   // /
     }
 
     #[derive(Debug)]
     pub enum Symbol {
-        SemiColon, // ';'
-        LParen,    // '('
-        RParen,    // ')'
+        SemiColon, // ;
+        LParen,    // (
+        RParen,    // )
+        DblQuote,  // "
     }
 
     #[derive(Debug)]
@@ -58,7 +59,7 @@ mod lexer {
 
         while let Some(&ch) = chars.peek() {
 
-            // Skip whitespace
+            // --- WHITESPACE ---
             if ch.is_whitespace() {
                 if ch == '\n' {
                     line += 1;
@@ -70,8 +71,9 @@ mod lexer {
                 continue;
             }
 
-            // Symbols
-            let start_col = column;
+            let start_column = column;
+
+            // --- SYMBOLS ---
             match ch {
                 ';' => {
                     tokens.push(Token {
@@ -80,8 +82,7 @@ mod lexer {
                         line,
                         column,
                     });
-                    chars.next();
-                    column += 1;
+                    chars.next(); column += 1;
                     continue;
                 }
                 '(' => {
@@ -91,8 +92,7 @@ mod lexer {
                         line,
                         column,
                     });
-                    chars.next();
-                    column += 1;
+                    chars.next(); column += 1;
                     continue;
                 }
                 ')' => {
@@ -102,14 +102,23 @@ mod lexer {
                         line,
                         column,
                     });
-                    chars.next();
-                    column += 1;
+                    chars.next(); column += 1;
+                    continue;
+                }
+                '"' => {
+                    tokens.push(Token {
+                        kind: TokenKind::Symbol(Symbol::DblQuote),
+                        value: None,
+                        line,
+                        column,
+                    });
+                    chars.next(); column += 1;
                     continue;
                 }
                 _ => {}
             }
 
-            // Operators
+            // --- OPERATORS ---
             match ch {
                 '=' => {
                     tokens.push(Token {
@@ -118,8 +127,7 @@ mod lexer {
                         line,
                         column,
                     });
-                    chars.next();
-                    column += 1;
+                    chars.next(); column += 1;
                     continue;
                 }
                 '+' => {
@@ -129,8 +137,7 @@ mod lexer {
                         line,
                         column,
                     });
-                    chars.next();
-                    column += 1;
+                    chars.next(); column += 1;
                     continue;
                 }
                 '-' => {
@@ -140,8 +147,7 @@ mod lexer {
                         line,
                         column,
                     });
-                    chars.next();
-                    column += 1;
+                    chars.next(); column += 1;
                     continue;
                 }
                 '*' => {
@@ -151,8 +157,7 @@ mod lexer {
                         line,
                         column,
                     });
-                    chars.next();
-                    column += 1;
+                    chars.next(); column += 1;
                     continue;
                 }
                 '/' => {
@@ -162,14 +167,13 @@ mod lexer {
                         line,
                         column,
                     });
-                    chars.next();
-                    column += 1;
+                    chars.next(); column += 1;
                     continue;
                 }
                 _ => {}
             }
 
-            // Identifiers or keywords
+            // --- IDENTIFIERS / KEYWORDS ---
             if ch.is_alphabetic() {
                 let mut ident = String::new();
 
@@ -183,6 +187,7 @@ mod lexer {
                     }
                 }
 
+                // Check if keyword
                 let keyword = match ident.as_str() {
                     "print" => Some(Keyword::Print),
                     "println" => Some(Keyword::Println),
@@ -196,21 +201,21 @@ mod lexer {
                         kind: TokenKind::Keyword(kw),
                         value: None,
                         line,
-                        column: start_col,
+                        column: start_column,
                     });
                 } else {
                     tokens.push(Token {
                         kind: TokenKind::Identifier(ident.clone()),
                         value: Some(ident),
                         line,
-                        column: start_col,
+                        column: start_column,
                     });
                 }
 
                 continue;
             }
 
-            // Unknown character
+            // --- UNKNOWN CHARACTER ---
             chars.next();
             column += 1;
         }
